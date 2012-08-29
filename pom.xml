@@ -62,6 +62,7 @@
           <provision>
             <param>--platform=felix</param>
           </provision>
+          <profiles>core,compendium,event,web,config,felix.webconsole,felix.fileinstall</profiles>
         </configuration>
         <executions>
           <!--
