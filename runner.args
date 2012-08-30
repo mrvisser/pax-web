@@ -1,0 +1,1 @@
+--vmOptions=-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n
