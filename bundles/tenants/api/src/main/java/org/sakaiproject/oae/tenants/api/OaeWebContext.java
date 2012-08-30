@@ -15,9 +15,7 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.sakaiproject.oae.jaxrs.api;
-
-import org.sakaiproject.oae.tenants.api.Tenant;
+package org.sakaiproject.oae.tenants.api;
 
 /**
  * A bean that represents the web execution context of a request to OAE.
@@ -25,11 +23,11 @@ import org.sakaiproject.oae.tenants.api.Tenant;
 public interface OaeWebContext {
 
 	/**
-	 * @return The tenant that is associated with this webcontext.
+	 * @return The port for this webcontext.
 	 * @throws IllegalStateException
 	 *             If this method is accessed without the web context being
 	 *             initialized.
 	 */
-	Tenant getTenant() throws IllegalStateException;
+	int getPort() throws IllegalStateException;
 
 }

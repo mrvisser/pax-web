@@ -2,12 +2,14 @@ package org.sakaiproject.oae.tenants.api;
 
 import java.util.Collection;
 
+import javax.servlet.ServletRequest;
+
 public interface TenantService {
 
 	/**
 	 * @return The current tenant.
 	 */
-	public Tenant getCurrentTenant();
+	public Tenant getCurrentTenant(ServletRequest req);
 
 	/**
 	 * Each tenant runs on it's own port which can be used to determine it's ID.
@@ -36,5 +38,8 @@ public interface TenantService {
 	 * @return
 	 */
 	public Tenant createTenant(String tenantName);
+
+	Tenant createTenant(int port, String tenantName);
+	Tenant createTenant(int id, int port, String tenantName);
 
 }

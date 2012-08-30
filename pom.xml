@@ -53,11 +53,12 @@
 	  <modules>
 	    <module>poms</module>
 	    <module>provision</module>
+	    <module>bundles/jetty-config</module>
 	    <module>bundles/jaxp-api</module>
 	    <module>bundles/tenants/api</module>
 	    <module>bundles/jax-rs</module>
 	    <module>bundles/tenants/impl</module>
-	    <!-- <module>bundles/shiro</module> -->
+	    <module>bundles/shiro</module>
 	  </modules>
 	 </profile>
 	  <profile>
@@ -105,7 +106,7 @@
             <param>--platform=felix</param>
           </provision>
           <profiles>core,compendium,event,web,config,felix.webconsole,felix.fileinstall</profiles>
-          <!-- <noDependencies>true</noDependencies> -->
+          <noDependencies>true</noDependencies>
         </configuration>
         <executions>
           <!--

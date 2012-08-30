@@ -15,25 +15,24 @@
  * KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-package org.sakaiproject.oae.jaxrs;
+package org.sakaiproject.oae.tenants.impl;
 
-import org.sakaiproject.oae.jaxrs.api.OaeWebContext;
-import org.sakaiproject.oae.tenants.api.Tenant;
+import org.sakaiproject.oae.tenants.api.OaeWebContext;
 
 /**
  * A simple getter/setter version of the web context. Intended for internal use.
  */
 public class BeanNakamuraWebContextImpl implements OaeWebContext {
 
-	private Tenant tenant;
+	private int port = Integer.MIN_VALUE;
 
 	@Override
-	public Tenant getTenant() throws IllegalStateException {
-		return tenant;
+	public int getPort() throws IllegalStateException {
+		return port;
 	}
 
-	public void setTenant(Tenant tenant) {
-		this.tenant = tenant;
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 }

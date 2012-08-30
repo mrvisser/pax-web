@@ -2,12 +2,14 @@ package org.sakaiproject.oae.tenants.impl;
 
 import java.util.Collection;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.felix.scr.annotations.Component;
@@ -30,6 +32,8 @@ public class TenantStore implements JaxrsService {
 
 	@Reference
 	protected TenantService tenantService;
+	
+	@Context private HttpServletRequest servletRequest;
 
 	protected static final Logger LOGGER = LoggerFactory
 			.getLogger(TenantStore.class);
@@ -40,11 +44,17 @@ public class TenantStore implements JaxrsService {
 		LOGGER.info("Getting tenant.");
 		return tenantService.getTenantById(id);
 	}
-	
+
 	@GET
 	@Path("/test")
 	public Tenant test() {
 		return new Tenant(0, 0, "sdfsdfsdf!");
+	}
+
+	@GET
+	@Path("/current")
+	public Tenant current() {
+		return tenantService.getCurrentTenant(servletRequest);
 	}
 
 	@GET
@@ -55,8 +65,11 @@ public class TenantStore implements JaxrsService {
 
 	@POST
 	@Path("/add")
-	public Tenant addTenant(@FormParam("name") String name) {
-		return tenantService.createTenant(name);
+	public Tenant addTenant(@FormParam("name") String name, @FormParam("port") Integer port) {
+		if (port == null)
+			return tenantService.createTenant(name);
+		else
+			return tenantService.createTenant(port, name);
 	}
 
 }
