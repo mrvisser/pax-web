@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
-    <OCD id="org.sakaiproject.oae.jaxrs.ResteasyServlet" name="%org.sakaiproject.oae.jaxrs.ResteasyServlet.name" description="%org.sakaiproject.oae.jaxrs.ResteasyServlet.description">
-        <AD id="alias" type="String" default="/api" name="Context" description="The top-level context of the JAX-RS API space. Must begin with a '/'. (Default: /api)"/>
-    </OCD>
-    <Designate pid="org.sakaiproject.oae.jaxrs.ResteasyServlet">
-        <Object ocdref="org.sakaiproject.oae.jaxrs.ResteasyServlet"/>
-    </Designate>
-</metatype:MetaData>
