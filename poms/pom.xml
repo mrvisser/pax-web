@@ -17,7 +17,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>wrappers</module>
+    <!--module>wrappers</module-->
     <module>compiled</module>
   </modules>
 

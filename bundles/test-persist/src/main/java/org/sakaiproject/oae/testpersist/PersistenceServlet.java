@@ -3,10 +3,14 @@ package org.sakaiproject.oae.testpersist;
 import me.prettyprint.cassandra.model.CqlQuery;
 import me.prettyprint.cassandra.model.CqlRows;
 import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.Row;
+import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
+import me.prettyprint.hector.api.ddl.ComparatorType;
+import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
@@ -14,11 +18,12 @@ import me.prettyprint.hector.api.query.QueryResult;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
 import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.log.LogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 import javax.servlet.ServletException;
@@ -26,18 +31,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@Component(metatype=true)
+@Component
 @Service
 @Property(name="alias", value="/api/test-persistence")
 public class PersistenceServlet extends HttpServlet {
   private static final long serialVersionUID = 1L;
 
-  @Reference
-  LogService logger;
-  
+  private final static Logger LOGGER = LoggerFactory.getLogger(PersistenceServlet.class);
+
   @Activate
   public void activate() {
-    logger.log(LogService.LOG_INFO, "Initialized()");
+    LOGGER.info("Initializing...");
+    Cluster cluster = getOrCreateCluster();
+    
+    if (cluster.describeKeyspace("OAE") == null) {
+      ColumnFamilyDefinition cfd = HFactory.createColumnFamilyDefinition("OAE", "StringContent", ComparatorType.UTF8TYPE);
+      KeyspaceDefinition kd = HFactory.createKeyspaceDefinition("OAE", ThriftKsDef.DEF_STRATEGY_CLASS, 1, Arrays.asList(cfd));
+      getOrCreateCluster().addKeyspace(kd, true);
+    }
+    
+    LOGGER.info("Finished building keyspace.");
   }
   
   /**
@@ -87,6 +100,6 @@ public class PersistenceServlet extends HttpServlet {
   }
 
   private Cluster getOrCreateCluster() {
-    return HFactory.getOrCreateCluster("Test Persistence", "127.0.0.1:9170");
+    return HFactory.getOrCreateCluster("Test Persistence", "127.0.0.1:9160");
   }
 }

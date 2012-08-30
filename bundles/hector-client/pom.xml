@@ -9,18 +9,19 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.sakaiproject.oae.test-persist</bundle.symbolicName>
-    <bundle.namespace>org.sakaiproject.oae.test-persist</bundle.namespace>
+    <bundle.symbolicName>org.sakaiproject.oae.hector-client</bundle.symbolicName>
+    <bundle.namespace>org.sakaiproject.oae</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sakaiproject.oae</groupId>
-  <artifactId>test-persist</artifactId>
-  <name>${bundle.symbolicName}</name>
+  <artifactId>hector-client</artifactId>
+
+  <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+
   <packaging>bundle</packaging>
 
-
-  <build>
+    <build>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -48,8 +49,24 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-Category>OAE</Bundle-Category>
-            <Private-Package>org.sakaiproject.oae.testpersist.*</Private-Package>
+            <Bundle-Category>Cassandra</Bundle-Category>
+            <Embed-Dependency>
+              hector-core,
+              cassandra-thrift,
+              libthrift,
+              httpclient,
+              httpcore
+            </Embed-Dependency>
+            <Import-Package>
+              !com.eaio.uuid,
+              !com.ecyrd.speed4j,
+              !org.ietf.jgss,
+              !com.sun.xml.fastinfoset.stax,
+              *
+            </Import-Package>
+            <Export-Package>
+              me.prettyprint.*;version="1.1.0.1"
+            </Export-Package>
           </instructions>
         </configuration>
       </plugin>
@@ -67,21 +84,31 @@
       <artifactId>osgi_R4_compendium</artifactId>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
-    </dependency>
+    
     <dependency>
       <groupId>org.hectorclient</groupId>
       <artifactId>hector-core</artifactId>
       <version>1.1-1</version>
     </dependency>
-
     <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.scr.annotations</artifactId>
-      <version>1.6.0</version>
+      <groupId>org.apache.cassandra</groupId>
+      <artifactId>cassandra-thrift</artifactId>
+      <version>1.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.thrift</groupId>
+      <artifactId>libthrift</artifactId>
+      <version>0.8.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>4.2</version>
     </dependency>
   </dependencies>
 
