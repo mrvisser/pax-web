@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Built-By: simon
+Tool: Bnd-0.0.357
+Bundle-Name: OAE Http Jetty
+Created-By: Hand
+Bundle-Vendor: The Sakai Software Foundation
+Build-Jdk: 1.6.0_13
+Bundle-Version: 2.2.0
+Service-Component: OSGI-INF/serviceComponents.xml
+Bundle-ManifestVersion: 2
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Add some Jetty connectors
+Bundle-DocURL: http://www.sakaiproject.org/
+Bundle-SymbolicName: org.apache.felix.http.jetty
+Fragment-Host: org.ops4j.pax.web.pax-web-jetty-bundle
