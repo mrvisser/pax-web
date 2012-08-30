@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0">
+    <scr:component enabled="true" name="org.sakaiproject.oae.jaxrs.ThreadLocalOaeWebContext">
+        <implementation class="org.sakaiproject.oae.jaxrs.ThreadLocalOaeWebContext"/>
+        <service servicefactory="false">
+            <provide interface="org.sakaiproject.oae.jaxrs.api.OaeWebContext"/>
+            <provide interface="javax.servlet.Filter"/>
+        </service>
+        <property name="pattern" type="String" value=".*" private="false"/>
+        <property name="service.pid" value="org.sakaiproject.oae.jaxrs.ThreadLocalOaeWebContext" private="false"/>
+        <reference name="tenantService" interface="org.sakaiproject.oae.tenants.api.TenantService" cardinality="1..1" policy="static" bind="bindTenantService" unbind="unbindTenantService" checked="true" strategy="event"/>
+    </scr:component>
+    <scr:component enabled="true" immediate="true" name="org.sakaiproject.oae.jaxrs.ResteasyServlet" activate="activate" deactivate="deactivate">
+        <implementation class="org.sakaiproject.oae.jaxrs.ResteasyServlet"/>
+        <service servicefactory="false">
+            <provide interface="javax.servlet.Servlet"/>
+        </service>
+        <property name="alias" type="String" value="/api" private="false"/>
+        <property name="service.pid" value="org.sakaiproject.oae.jaxrs.ResteasyServlet" private="false"/>
+        <reference name="services" interface="org.sakaiproject.oae.jaxrs.api.JaxrsService" cardinality="0..n" policy="dynamic" bind="bindService" unbind="unbindService" checked="true" strategy="event"/>
+    </scr:component>
+</components>

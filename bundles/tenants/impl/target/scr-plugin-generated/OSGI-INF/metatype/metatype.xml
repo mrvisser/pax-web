@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.0.0" localization="OSGI-INF/metatype/metatype">
+    <OCD id="org.sakaiproject.oae.tenants.impl.TenantServiceImpl" name="%org.sakaiproject.oae.tenants.impl.TenantServiceImpl.name" description="%org.sakaiproject.oae.tenants.impl.TenantServiceImpl.description"/>
+    <OCD id="org.sakaiproject.oae.tenants.impl.TenantStore" name="%org.sakaiproject.oae.tenants.impl.TenantStore.name" description="%org.sakaiproject.oae.tenants.impl.TenantStore.description"/>
+    <Designate pid="org.sakaiproject.oae.tenants.impl.TenantServiceImpl">
+        <Object ocdref="org.sakaiproject.oae.tenants.impl.TenantServiceImpl"/>
+    </Designate>
+    <Designate pid="org.sakaiproject.oae.tenants.impl.TenantStore">
+        <Object ocdref="org.sakaiproject.oae.tenants.impl.TenantStore"/>
+    </Designate>
+</metatype:MetaData>

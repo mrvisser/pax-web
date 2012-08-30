@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
+    <scr:component enabled="true" name="org.sakaiproject.oae.tenants.impl.TenantServiceImpl">
+        <implementation class="org.sakaiproject.oae.tenants.impl.TenantServiceImpl"/>
+        <service servicefactory="false">
+            <provide interface="org.sakaiproject.oae.tenants.api.TenantService"/>
+        </service>
+        <property name="service.vendor" type="String" value="The Sakai Foundation"/>
+        <property name="service.pid" value="org.sakaiproject.oae.tenants.impl.TenantServiceImpl"/>
+    </scr:component>
+    <scr:component enabled="true" name="org.sakaiproject.oae.tenants.impl.TenantStore">
+        <implementation class="org.sakaiproject.oae.tenants.impl.TenantStore"/>
+        <service servicefactory="false">
+            <provide interface="org.sakaiproject.oae.jaxrs.api.JaxrsService"/>
+        </service>
+        <property name="service.vendor" type="String" value="The Sakai Foundation"/>
+        <property name="service.pid" value="org.sakaiproject.oae.tenants.impl.TenantStore"/>
+        <reference name="tenantService" interface="org.sakaiproject.oae.tenants.api.TenantService" cardinality="1..1" policy="static" bind="bindTenantService" unbind="unbindTenantService"/>
+    </scr:component>
+</components>

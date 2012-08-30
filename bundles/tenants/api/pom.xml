@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+     <relativePath>../../../poms/compiled/</relativePath>
+    <groupId>org.sakaiproject.oae.n2.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <properties>
+    <bundle.symbolicName>org.sakaiproject.oae.tenants.api</bundle.symbolicName>
+    <bundle.namespace>org.sakaiproject.oae.tenants.api</bundle.namespace>
+  </properties>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>org.sakaiproject.oae.tenants.api</artifactId>
+  <name>Sakai OAE :: Tenants API bundle</name>
+  <description>Simple Tenants api functionality.</description>
+  <packaging>bundle</packaging>
+  
+  <profiles>
+      <profile>
+	  <id>redeploy</id>                                        
+	  <build>
+	   <plugins>
+	     <plugin>
+	      <groupId>org.apache.felix</groupId>
+	      <artifactId>maven-bundle-plugin</artifactId>
+	      <extensions>true</extensions>
+	      <executions>
+	        <execution>
+	          <id>install-bundle</id>
+	          <phase>install</phase>
+              <goals>
+                  <goal>install</goal>
+              </goals>
+              <configuration>
+                  <slingUrl>http://localhost:8080/system/console/install</slingUrl>
+                  <user>admin</user>
+                  <password>admin</password>
+              </configuration>
+	        </execution>
+	      </executions>
+	     </plugin>
+	     
+	     <plugin>
+		    <groupId>org.ops4j</groupId>
+		    <artifactId>maven-pax-plugin</artifactId>
+		    <configuration>
+		        <provision>
+		            <param>--platform=felix</param>
+		            <param>--profiles=compendium,bundle</param>
+		        </provision>
+		    </configuration>
+		</plugin>
+	     
+	   </plugins>
+	  </build>
+	</profile>
+      
+  </profiles>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-scr-plugin</artifactId>
+        <version>1.7.2</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.6</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>generate-scr-scrdescriptor</id>
+            <goals>
+              <goal>scr</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-Category>sakai-oae</Bundle-Category>
+            <Export-Package> org.sakaiproject.oae.tenants.api.* </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.osgi.compendium</artifactId>
+      <version>1.4.0</version>
+    </dependency>
+    <dependency>
+	  <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.2.7</version>
+	</dependency>
+            
+  </dependencies>
+</project>

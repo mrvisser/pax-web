@@ -44,13 +44,55 @@
 
   <packaging>pom</packaging>
 
-  <modules>
-    <module>poms</module>
-    <module>provision</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>build</id>
+      <activation>
+          <activeByDefault>true</activeByDefault>
+      </activation>
+	  <modules>
+	    <module>poms</module>
+	    <module>provision</module>
+	    <module>bundles/jaxp-api</module>
+	    <module>bundles/tenants/api</module>
+	    <module>bundles/jax-rs</module>
+	    <module>bundles/tenants/impl</module>
+	    <!-- <module>bundles/shiro</module> -->
+	  </modules>
+	 </profile>
+	  <profile>
+	   <id>redeploy</id>
+	   <build>
+	    <plugins>
+	      <plugin>
+	       <groupId>org.apache.sling</groupId>
+	       <artifactId>maven-sling-plugin</artifactId>
+	       <version>2.0.6</version>
+	       <executions>
+	         <execution>
+	           <id>install-bundle</id>
+	           <goals>
+	             <goal>install</goal>
+	           </goals>
+	         </execution>
+	       </executions>
+	      </plugin>
+	    </plugins>
+	   </build>
+	 </profile>
+  </profiles>
 
   <build>
     <plugins>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+         <version>2.5.1</version>
+         <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.ops4j</groupId>
         <artifactId>maven-pax-plugin</artifactId>
@@ -63,6 +105,7 @@
             <param>--platform=felix</param>
           </provision>
           <profiles>core,compendium,event,web,config,felix.webconsole,felix.fileinstall</profiles>
+          <!-- <noDependencies>true</noDependencies> -->
         </configuration>
         <executions>
           <!--
