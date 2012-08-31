@@ -1,8 +1,20 @@
 package org.sakaiproject.oae.tenants.impl;
 
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Modified;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.osgi.framework.BundleContext;
+import org.sakaiproject.oae.tenants.api.OaeWebContext;
+import org.sakaiproject.oae.tenants.api.Tenant;
+import org.sakaiproject.oae.tenants.api.TenantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -10,19 +22,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Modified;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Service;
-import org.ops4j.pax.web.service.WebContainer;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.sakaiproject.oae.tenants.api.OaeWebContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Component(immediate = true, metatype = true)
 @Service({ OaeWebContext.class, Filter.class })
@@ -38,6 +37,13 @@ public class ThreadLocalOaeWebContext implements Filter, OaeWebContext {
 
 	private final static ThreadLocal<BeanNakamuraWebContextImpl> webContextThreadLocal = new ThreadLocal<BeanNakamuraWebContextImpl>();
 
+	@Reference
+	protected TenantService tenantService;
+	
+	public ThreadLocalOaeWebContext(TenantService tenantService) {
+	  this.tenantService = tenantService;
+	}
+	
 	public ThreadLocalOaeWebContext() {
 	}
 
@@ -48,27 +54,13 @@ public class ThreadLocalOaeWebContext implements Filter, OaeWebContext {
 	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		LOGGER.info("init()\n\n\n\n\n\n\n\n");
+		LOGGER.info("init()");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Activate
 	@Modified
 	public void activate(BundleContext bundleContext) {
-		LOGGER.info("activate()\n\n\n\n\n\n\n\n");
-
-		Dictionary props = new Hashtable();
-		String[] urls = { "/api*" };
-		props.put("filter-name", "Tenant Filter");
-	//	props.put("urlPatterns", urls);
-
-		//
-
-		//ServiceReference ref = bundleContext.getServiceReference(WebContainer.class.getName());
-		//WebContainer container = (WebContainer) bundleContext.getService(ref);
-		//LOGGER.info(container.getClass().getName());
-		//container.registerFilter(this, urls, null, props, null);
-//		bundleContext.registerService(Filter.class.getName(), this, props );
+		LOGGER.info("activate()");
 
 	}
 
@@ -81,7 +73,6 @@ public class ThreadLocalOaeWebContext implements Filter, OaeWebContext {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		LOGGER.info("FILTERING\n\n\n\n\n\n\n");
 		initWebContext(request, response);
 		try {
 			chain.doFilter(request, response);
@@ -128,10 +119,14 @@ public class ThreadLocalOaeWebContext implements Filter, OaeWebContext {
 	 */
 	private int resolveTenant(ServletRequest request, ServletResponse response,
 			BeanNakamuraWebContextImpl webContext) {
-		webContext.setPort(request.getServerPort());
-		LOGGER.info("Adding" + request.getServerPort()
-				+ " to the threadlocals.");
-		return request.getServerPort();
+		int port = request.getServerPort();
+		Tenant tenant = tenantService.getTenantByPort(port);
+		if (tenant == null) {
+		  LOGGER.error("Access made for invalid tenant port: "+port);
+		  throw new IllegalStateException("Not tenant configured for requested port");
+		}
+		webContext.setTenantId(tenant.getId());
+		return tenant.getId();
 	}
 
 	/**
@@ -161,15 +156,14 @@ public class ThreadLocalOaeWebContext implements Filter, OaeWebContext {
 
 		// we can determine if this was initialized based on whether or not the
 		// tenant id was set.
-		if (webContextThreadLocal.get().getPort() == Integer.MIN_VALUE)
+		if (webContextThreadLocal.get().getTenantId() == Integer.MIN_VALUE)
 			throw new IllegalStateException(
 					"Attempted to access uninitialized web context");
 	}
 
 	@Override
-	public int getPort() throws IllegalStateException {
-		// return webContextThreadLocal.get().getPort();
-		return 8080;
+	public int getTenantId() throws IllegalStateException {
+		return webContextThreadLocal.get().getTenantId();
 	}
 
 }

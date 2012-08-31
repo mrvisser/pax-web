@@ -1,5 +1,15 @@
 package org.sakaiproject.oae.tenants.impl;
 
+import org.apache.felix.scr.annotations.Activate;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Modified;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.PropertyUnbounded;
+import org.apache.felix.scr.annotations.Service;
+import org.sakaiproject.oae.tenants.api.Tenant;
+import org.sakaiproject.oae.tenants.api.TenantService;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -7,41 +17,43 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
-import org.apache.felix.scr.annotations.Activate;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Modified;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.sakaiproject.oae.tenants.api.OaeWebContext;
-import org.sakaiproject.oae.tenants.api.Tenant;
-import org.sakaiproject.oae.tenants.api.TenantService;
-
 @Service
 @Component(metatype = true)
 @Properties(value = { @Property(name = "service.vendor", value = "The Sakai Foundation") })
 public class TenantServiceImpl implements TenantService {
 
-	@Reference
-	protected OaeWebContext webContext;
-
+  private final static String DEFAULT_TENANT_PORT_MAPPING = "default:8080";
+  
+	@Property(label="Tenant-port mappings", description="A mapping of tenantId:port for all tenants in the system",
+	    value={DEFAULT_TENANT_PORT_MAPPING}, unbounded=PropertyUnbounded.ARRAY)
+	protected final static String PROP_TENANT_PORT_MAPPING = "tenant-port-mapping";
+	
 	private List<Tenant> tenants = new ArrayList<Tenant>();
 
 	@SuppressWarnings("unused")
 	@Activate
 	@Modified
-	private void activate(Map<Object, Object> properties) {
-		tenants.add(new Tenant(1, 8080, "Cambridge University"));
-		tenants.add(new Tenant(2, 8081, "New York University"));
-		tenants.add(new Tenant(3, 8082, "Georgia Tech"));
-		tenants.add(new Tenant(4, 8083, "AAR"));
-		tenants.add(new Tenant(5, 8084, "CSU"));
+	private synchronized void activate(Map<Object, Object> properties) {
+	  Object tenantMappingsObj = properties.get(PROP_TENANT_PORT_MAPPING);
+	  
+	  tenants.clear();
+	  
+	  String[] tenantMappings = (tenantMappingsObj instanceof String) ? new String[] {
+	    (String) tenantMappingsObj } : (String[]) tenantMappingsObj; 
+	  
+	  if (tenantMappings == null)
+	    tenantMappings = new String[] { DEFAULT_TENANT_PORT_MAPPING };
+	  
+	  int i = 0;
+	  for (String tenantMapping : tenantMappings) {
+	    String[] split = tenantMapping.split(":");
+	    tenants.add(new Tenant(i, Integer.valueOf(split[1]), split[0]));
+	    i++;
+	  }
 	}
 
 	@Override
 	public Tenant getCurrentTenant(ServletRequest req) {
-		//int port = webContext.getPort();
 		int port = req.getServerPort();
 		return getTenantByPort(port);
 	}

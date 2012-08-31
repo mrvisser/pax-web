@@ -1,5 +1,17 @@
 package org.sakaiproject.oae.tenants.impl;
 
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Properties;
+import org.apache.felix.scr.annotations.Property;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.Service;
+import org.sakaiproject.oae.jaxrs.api.JaxrsService;
+import org.sakaiproject.oae.tenants.api.OaeWebContext;
+import org.sakaiproject.oae.tenants.api.Tenant;
+import org.sakaiproject.oae.tenants.api.TenantService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,17 +24,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Properties;
-import org.apache.felix.scr.annotations.Property;
-import org.apache.felix.scr.annotations.Reference;
-import org.apache.felix.scr.annotations.Service;
-import org.sakaiproject.oae.jaxrs.api.JaxrsService;
-import org.sakaiproject.oae.tenants.api.Tenant;
-import org.sakaiproject.oae.tenants.api.TenantService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Path("/tenants")
 @Produces(MediaType.APPLICATION_JSON)
 @Service(value = JaxrsService.class)
@@ -30,11 +31,12 @@ import org.slf4j.LoggerFactory;
 @Properties(value = { @Property(name = "service.vendor", value = "The Sakai Foundation") })
 public class TenantStore implements JaxrsService {
 
+  @Reference
+  protected OaeWebContext webContext;
+  
 	@Reference
 	protected TenantService tenantService;
 	
-	@Context private HttpServletRequest servletRequest;
-
 	protected static final Logger LOGGER = LoggerFactory
 			.getLogger(TenantStore.class);
 
@@ -53,8 +55,8 @@ public class TenantStore implements JaxrsService {
 
 	@GET
 	@Path("/current")
-	public Tenant current() {
-		return tenantService.getCurrentTenant(servletRequest);
+	public Tenant current(@Context HttpServletRequest servletRequest) {
+		return getById(webContext.getTenantId());
 	}
 
 	@GET

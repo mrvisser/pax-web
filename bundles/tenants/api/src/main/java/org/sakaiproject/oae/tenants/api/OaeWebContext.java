@@ -23,11 +23,11 @@ package org.sakaiproject.oae.tenants.api;
 public interface OaeWebContext {
 
 	/**
-	 * @return The port for this webcontext.
+	 * @return The tenant ID for this webcontext.
 	 * @throws IllegalStateException
 	 *             If this method is accessed without the web context being
 	 *             initialized.
 	 */
-	int getPort() throws IllegalStateException;
+	int getTenantId() throws IllegalStateException;
 
 }

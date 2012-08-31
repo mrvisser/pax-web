@@ -24,15 +24,15 @@ import org.sakaiproject.oae.tenants.api.OaeWebContext;
  */
 public class BeanNakamuraWebContextImpl implements OaeWebContext {
 
-	private int port = Integer.MIN_VALUE;
+	private int tenantId = Integer.MIN_VALUE;
 
 	@Override
-	public int getPort() throws IllegalStateException {
-		return port;
+	public int getTenantId() throws IllegalStateException {
+		return tenantId;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
+	public void setTenantId(int tenantId) {
+		this.tenantId = tenantId;
 	}
 
 }
