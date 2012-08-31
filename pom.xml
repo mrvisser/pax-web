@@ -48,49 +48,50 @@
     <profile>
       <id>build</id>
       <activation>
-          <activeByDefault>true</activeByDefault>
+        <activeByDefault>true</activeByDefault>
       </activation>
-	  <modules>
-	    <module>poms</module>
-	    <module>provision</module>
-	    <module>bundles/jetty-config</module>
-      <module>bundles/test-persist</module>
-      <module>bundles/hector-client</module>
-	    <module>bundles/jaxp-api</module>
-	    <module>bundles/tenants/api</module>
-	    <module>bundles/jax-rs</module>
-	    <module>bundles/tenants/impl</module>
-	  </modules>
-	 </profile>
-	  <profile>
-	   <id>redeploy</id>
-	   <build>
-	    <plugins>
-	      <plugin>
-	       <groupId>org.apache.sling</groupId>
-	       <artifactId>maven-sling-plugin</artifactId>
-	       <version>2.0.6</version>
-	       <executions>
-	         <execution>
-	           <id>install-bundle</id>
-	           <goals>
-	             <goal>install</goal>
-	           </goals>
-	         </execution>
-	       </executions>
-	      </plugin>
-	    </plugins>
-	   </build>
-	 </profile>
+      <modules>
+        <module>poms</module>
+        <module>provision</module>
+        <module>bundles/org.json</module>
+        <module>bundles/jetty-config</module>
+        <module>bundles/test-persist</module>
+        <module>bundles/hector-client</module>
+        <module>bundles/jaxp-api</module>
+        <module>bundles/tenants/api</module>
+        <module>bundles/jax-rs</module>
+        <module>bundles/tenants/impl</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>redeploy</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>maven-sling-plugin</artifactId>
+            <version>2.0.6</version>
+            <executions>
+              <execution>
+                <id>install-bundle</id>
+                <goals>
+                  <goal>install</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
     <plugins>
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-         <version>2.5.1</version>
-         <configuration>
+        <version>2.5.1</version>
+        <configuration>
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
@@ -116,7 +117,7 @@
             <param>--platform=felix</param>
           </provision>
           <noDependencies>true</noDependencies>
-          <profiles>core,compendium,event,web,config,felix.webconsole,felix.fileinstall</profiles>
+          <profiles>core,compendium,event,config,log,felix.fileinstall</profiles>
           <noDependencies>true</noDependencies>
         </configuration>
         <executions>
